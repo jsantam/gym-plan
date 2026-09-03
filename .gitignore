@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+
+# Original full-size photos: source material, not shipped.
+# Only the resized crops in public/img/ go in the repo.
+IMG_*.JPG
+IMG_*.jpg
