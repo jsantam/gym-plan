@@ -1,5 +1,7 @@
 # gym-plan
 
+**Live: <https://jsantam.github.io/gym-plan/>**
+
 A workout tracker for my 5 day plan. Static PWA, no backend, no login, no
 account. Everything is stored on the phone that logs it.
 
