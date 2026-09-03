@@ -14,6 +14,11 @@ account. Everything is stored on the phone that logs it.
   set fills it in from what is already entered above it, then from the same
   set last time, then from the top of the rep range — so an ordinary
   session needs no typing.
+- **Swap an exercise.** Ab wheel, both Romanian deadlifts and chin-ups
+  offer easier alternatives under *Too hard? Swap it*. The swap sticks until
+  you change it, and is logged under the alternative's own name — so the
+  easier lift builds its own progress and the planned one keeps whatever
+  you already logged. Go back any time via *As planned*.
 - **History** lists every past session, newest first, down to the sets.
 - **Summary** rolls those records up per exercise: sessions, sets, reps,
   best weight, and the change from the first logged session to the latest.
@@ -50,9 +55,19 @@ Each exercise is:
   img:  "press",              // public/img/press.jpg
   eq:   "Multi-press machine, set to chest press",
   yt:   "https://...",
-  alt:  ""                    // optional swap if something hurts
+  alt:  "",                   // optional one-line note if something hurts
+  alts: [                     // optional easier alternatives, easiest first
+    { id: "dead-bug", name: "Dead bug", sets: 3, reps: "10-12 each",
+      works: "...", how: "...", img: "bench", eq: "...", yt: "...",
+      why: "Why you would pick this one" }
+  ]
 }
 ```
+
+An alternative is a full exercise in its own right: give it a unique `id`
+and its sessions are filed separately. Reusing an existing id on purpose
+makes the two aggregate — the chin-up alternative *Lat pulldown* reuses
+`lat-pulldown`, so it counts alongside the Wednesday pulldowns.
 
 **Do not change an existing `id`.** It is the key every logged session is
 filed under, so renaming one orphans that exercise's history. Changing

@@ -6,7 +6,7 @@ import { getMeta, setMeta, putSession, exerciseHistory } from './store.js';
 import {
   DAY_LABEL, dateKey, prettyDate, weekOf, todaysDayIndex,
   ensureSession, prefillFor, setsDone, exComplete, dayComplete,
-  sessionVolume, topReps,
+  sessionVolume, topReps, resolveDay, swapKey,
 } from './session.js';
 import { startTimer } from './timer.js';
 
@@ -27,6 +27,9 @@ let isRest = false;
 let session = null;
 let startDate = null;
 const openPanels = new Set();   // exercise ids with the how-to panel open
+const openSwaps = new Set();    // exercises showing their alternatives list
+let swaps = {};                 // { "day-id:exercise-id": alternative-id }
+let exList = [];                // today's exercises after swaps are applied
 let showSummary = false;
 
 const today = dateKey();
@@ -102,6 +105,28 @@ function setRow(rec, i, exIndex) {
   </div>`;
 }
 
+function swapHTML(ex, j) {
+  const planned = ex.swappedFrom ? null : ex;
+  const alts = ex.alts || [];
+  if (!alts.length) return '';
+  const key = ex.swappedFrom || ex.id;
+  const open = openSwaps.has(String(j));
+  if (!open) {
+    return `<button class="toggle swapbtn" type="button" data-swapopen="${j}">${
+      ex.swappedFrom ? 'Swapped. Change or go back' : 'Too hard? Swap it'}</button>`;
+  }
+  const opt = (id, name, why, on) => `<button class="opt${on ? ' on' : ''}" type="button"
+      data-swap="${j}:${id}" aria-pressed="${on}"><b>${esc(name)}</b>${
+      why ? `<span>${esc(why)}</span>` : ''}</button>`;
+  return `<button class="toggle swapbtn" type="button" data-swapopen="${j}">Hide</button>
+    <div class="swaplist">
+      ${opt('__planned', ex.swappedFromName || ex.name, 'As planned', !ex.swappedFrom)}
+      ${alts.map(a => opt(a.id, a.name, a.why, ex.swappedFrom && ex.id === a.id)).join('')}
+      <p class="swapnote">Your history is kept per exercise, so the swap builds its own
+      progress and the planned lift keeps whatever you already logged.</p>
+    </div>`;
+}
+
 async function exerciseHTML(ex, rec, j, total) {
   const open = openPanels.has(ex.id + ':' + j);
   const rest = j < 2 ? 90 : 60;
@@ -116,9 +141,11 @@ async function exerciseHTML(ex, rec, j, total) {
       <div>
         <div class="num">${j + 1} of ${total}</div>
         <h2>${esc(ex.name)}</h2>
+        ${ex.swappedFrom ? `<div class="swapped">instead of ${esc(ex.swappedFromName)}</div>` : ''}
         <div class="big">${rec.setsTarget} sets of ${esc(rec.repsTarget)}</div>
         <div class="works">${esc(ex.works)}</div>
         <button class="toggle" type="button" data-panel="${ex.id}:${j}">${open ? 'Hide' : 'How to do it'}</button>
+        ${swapHTML(ex, j)}
       </div>
     </div>
     <div class="more">
@@ -129,6 +156,7 @@ async function exerciseHTML(ex, rec, j, total) {
       ${ex.alt ? `<p class="alt">${esc(ex.alt)}</p>` : ''}
       ${open ? await progressBlock(ex.id) : ''}
     </div>
+    ${j === 0 ? '<p class="hint">Tap a number when you finish that set. Typing a weight or reps logs it too.</p>' : ''}
     <div class="sets">${rec.sets.map((_, i) => setRow(rec, i, j)).join('')}</div>
     <div class="actions">
       <button class="btn ghost" type="button" data-rest="${rest}">Rest ${rest}s</button>
@@ -149,7 +177,8 @@ async function exerciseHTML(ex, rec, j, total) {
 
 export async function render() {
   const day = PLAN[cur];
-  session = await ensureSession(today, cur, ramp);
+  exList = resolveDay(day, swaps);
+  session = await ensureSession(today, cur, ramp, exList);
   const week = weekOf(startDate, today);
   const main = document.getElementById('main');
 
@@ -159,8 +188,8 @@ export async function render() {
   else if (week % 7 === 0) msg += ' Deload week: 2 sets, moderate weight, then back to normal next week.';
 
   const exHTML = [];
-  for (let j = 0; j < day.ex.length; j++) {
-    exHTML.push(await exerciseHTML(day.ex[j], session.exercises[j], j, day.ex.length));
+  for (let j = 0; j < exList.length; j++) {
+    exHTML.push(await exerciseHTML(exList[j], session.exercises[j], j, exList.length));
   }
 
   const logged = session.exercises.reduce((a, e) => a + setsDone(e), 0);
@@ -217,6 +246,13 @@ function markDayDots() {
 
 /* ---------- targeted updates (no re-render, so typing is never interrupted) ---------- */
 
+function refreshFinish() {
+  const btn = document.getElementById('finish');
+  if (!btn || !session) return;
+  const logged = session.exercises.reduce((a, e) => a + setsDone(e), 0);
+  btn.disabled = !logged;
+}
+
 function refreshExercise(j) {
   const rec = session.exercises[j];
   const sec = document.getElementById('ex-' + j);
@@ -252,6 +288,7 @@ async function tick(j, i) {
     row.querySelector('[data-fld=reps]').value = s.reps;
   }
   refreshExercise(j);
+  refreshFinish();
   save();
 }
 
@@ -274,6 +311,18 @@ function onClick(ev) {
     const k = t.dataset.panel;
     openPanels.has(k) ? openPanels.delete(k) : openPanels.add(k);
     render();
+  } else if (t.dataset.swapopen != null) {
+    const k = String(t.dataset.swapopen);
+    openSwaps.has(k) ? openSwaps.delete(k) : openSwaps.add(k);
+    render();
+  } else if (t.dataset.swap) {
+    const [j, id] = [t.dataset.swap.split(':')[0], t.dataset.swap.slice(t.dataset.swap.indexOf(':') + 1)];
+    const ex = exList[+j];
+    const key = swapKey(PLAN[cur].id, ex.swappedFrom || ex.id);
+    if (id === '__planned') delete swaps[key];
+    else swaps[key] = id;
+    openSwaps.delete(String(j));
+    setMeta('swaps', swaps).then(render);
   } else if (t.dataset.tick) {
     const [j, i] = t.dataset.tick.split(':').map(Number);
     tick(j, i);
@@ -307,10 +356,29 @@ function onInput(ev) {
   const field = el.dataset.fld;
   rec.sets[i][field] = numify(el.value);
 
+  // Entering a number *is* logging the set. Tapping the circle is the fast
+  // path, not the only one - typing the weight and never tapping used to
+  // leave the set uncounted and the Finish button dead.
+  if (el.value.trim() !== '' && !rec.sets[i].done) {
+    rec.sets[i].done = true;
+    rec.sets[i].at = new Date().toISOString();
+    const row = el.closest('.setrow');
+    if (row) {
+      row.classList.add('done');
+      const btn = row.querySelector('.set');
+      btn.classList.add('done');
+      btn.setAttribute('aria-pressed', 'true');
+    }
+    refreshExercise(j);
+    refreshFinish();
+  }
+
   if (field === 'weight' && el.value.trim() !== '') {
     for (let k = i + 1; k < rec.sets.length; k++) {
       if (!rec.sets[k].done && rec.sets[k].weight === '') {
-        rec.sets[k].weight = el.value.trim();
+        // Filled in as a convenience only - these sets are not logged until
+        // you actually tap or type in them.
+        rec.sets[k].weight = numify(el.value);
         const inp = document.querySelector(`[data-fld=weight][data-at="${j}:${k}"]`);
         if (inp && document.activeElement !== inp) inp.value = el.value.trim();
       }
@@ -321,6 +389,7 @@ function onInput(ev) {
 
 export async function mount() {
   ramp = await getMeta('ramp', true);
+  swaps = await getMeta('swaps', {}) || {};
   startDate = await getMeta('startDate', null);
   if (!startDate) startDate = await setMeta('startDate', today);
 

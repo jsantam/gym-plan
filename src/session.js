@@ -36,6 +36,21 @@ export function todaysDayIndex(d = new Date()) {
   return PLAN.findIndex(day => DOW[day.dow] === d.getDay());
 }
 
+// An exercise can be swapped for an easier alternative. The swap is a
+// stored preference per day, and the session is logged against the
+// alternative's own id so history stays honest about what was actually done.
+export const swapKey = (dayId, exId) => dayId + ':' + exId;
+
+export function effectiveEx(dayId, ex, swaps) {
+  const altId = swaps && swaps[swapKey(dayId, ex.id)];
+  if (!altId) return ex;
+  const alt = (ex.alts || []).find(a => a.id === altId);
+  if (!alt) return ex;
+  return { ...alt, alts: ex.alts, swappedFrom: ex.id, swappedFromName: ex.name };
+}
+
+export const resolveDay = (day, swaps) => day.ex.map(ex => effectiveEx(day.id, ex, swaps));
+
 export const setsTarget = (ex, ramp) => (ramp ? 2 : ex.sets);
 export const repsTarget = (ex, ramp) => (ramp ? '12-15' : ex.reps);
 
@@ -64,8 +79,9 @@ function blankExercise(ex, ramp) {
 // Existing records are reconciled against the current ramp setting: set
 // rows are added when the target grows, and never removed if they hold
 // logged work.
-export async function ensureSession(date, dayIndex, ramp) {
+export async function ensureSession(date, dayIndex, ramp, exList) {
   const day = PLAN[dayIndex];
+  const list = exList || day.ex;
   const id = sessionId(date, day.id);
   let s = await getSession(id);
 
@@ -77,15 +93,18 @@ export async function ensureSession(date, dayIndex, ramp) {
       startedAt: new Date().toISOString(),
       finishedAt: null,
       warmup: false,
-      exercises: day.ex.map(ex => blankExercise(ex, ramp)),
+      exercises: list.map(ex => blankExercise(ex, ramp)),
     };
     await putSession(s);
     return s;
   }
 
   s.ramp = !!ramp;
-  day.ex.forEach((ex, i) => {
-    const rec = s.exercises[i] || (s.exercises[i] = blankExercise(ex, ramp));
+  list.forEach((ex, i) => {
+    let rec = s.exercises[i];
+    // Swapped for a different exercise since this record was made: start the
+    // slot fresh rather than filing the new lift under the old one's id.
+    if (!rec || rec.exId !== ex.id) rec = s.exercises[i] = blankExercise(ex, ramp);
     rec.setsTarget = setsTarget(ex, ramp);
     rec.repsTarget = repsTarget(ex, ramp);
     const keep = Math.max(rec.setsTarget, rec.sets.filter(x => x.done).length);

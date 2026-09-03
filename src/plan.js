@@ -1,4 +1,5 @@
-// Generated from gym-plan.html. Edit this file to change the plan.
+// Generated from gym-plan.html, then edited by hand.
+// Do not change an exercise id: logged history is filed under it.
 export const PLAN = [
   {
     "id": "upper-push",
@@ -122,7 +123,35 @@ export const PLAN = [
         "img": "dbrack",
         "eq": "Dumbbell rack",
         "yt": "https://www.youtube.com/results?search_query=Dumbbell+Romanian+deadlift+form",
-        "alt": ""
+        "alt": "",
+        "alts": [
+          {
+            "id": "cable-pull-through",
+            "name": "Cable pull-through",
+            "sets": 3,
+            "reps": "12-15",
+            "works": "Hamstrings, glutes",
+            "how": "Rope on the low pulley. Face away from the machine with the rope between your legs. Push the hips back until you feel the hamstrings stretch, then stand tall by squeezing the glutes. The arms just hold on.",
+            "img": "rope",
+            "eq": "Rope on the cable machine, low pulley",
+            "yt": "https://www.youtube.com/results?search_query=Cable%20pull-through%20form",
+            "alt": "",
+            "why": "Teaches the same hip hinge with no load on the spine. The safest place to start."
+          },
+          {
+            "id": "dumbbell-hip-thrust",
+            "name": "Dumbbell hip thrust",
+            "sets": 3,
+            "reps": "10-12",
+            "works": "Glutes, hamstrings",
+            "how": "Upper back against a bench, feet flat, a dumbbell across the hips. Drive through the heels until the body is flat from knees to shoulders, pause, lower under control.",
+            "img": "bench",
+            "eq": "Bench and one dumbbell",
+            "yt": "https://www.youtube.com/results?search_query=Dumbbell%20hip%20thrust%20form",
+            "alt": "",
+            "why": "Hits the glutes hard with the back supported."
+          }
+        ]
       },
       {
         "id": "leg-curl",
@@ -158,7 +187,48 @@ export const PLAN = [
         "img": "abwheel",
         "eq": "Ab wheel, hanging on the cable machine",
         "yt": "https://www.youtube.com/results?search_query=Ab+wheel+form",
-        "alt": ""
+        "alt": "",
+        "alts": [
+          {
+            "id": "dead-bug",
+            "name": "Dead bug",
+            "sets": 3,
+            "reps": "10-12 each",
+            "works": "Abs, deep core control",
+            "how": "Lie on your back, arms straight up, knees bent at 90 degrees. Press your lower back flat into the floor and keep it there. Lower the opposite arm and leg toward the floor, stop before the back arches, then swap sides.",
+            "img": "bench",
+            "eq": "Floor, by the benches",
+            "yt": "https://www.youtube.com/results?search_query=Dead%20bug%20form",
+            "alt": "",
+            "why": "Easiest start. No equipment, and it teaches the same braced core the wheel needs."
+          },
+          {
+            "id": "plank",
+            "name": "Plank",
+            "sets": 3,
+            "reps": "20-40 seconds",
+            "works": "Abs, core",
+            "how": "Forearms and toes on the floor, elbows under the shoulders. Squeeze the glutes and hold a straight line from head to heels. End the set when the hips start to sag, not when the clock says so.",
+            "img": "bench",
+            "eq": "Floor",
+            "yt": "https://www.youtube.com/results?search_query=Plank%20form",
+            "alt": "",
+            "why": "Builds the hold. Add 5 seconds a week."
+          },
+          {
+            "id": "cable-kneeling-crunch",
+            "name": "Cable kneeling crunch",
+            "sets": 3,
+            "reps": "12-15",
+            "works": "Abs",
+            "how": "Rope on the high pulley. Kneel facing the machine with the rope beside your head. Crunch down by rounding the spine and bringing the elbows toward the thighs. The hips stay still.",
+            "img": "rope",
+            "eq": "Rope on the cable machine, high pulley",
+            "yt": "https://www.youtube.com/results?search_query=Cable%20kneeling%20crunch%20form",
+            "alt": "",
+            "why": "Closest to the wheel, and you can load it lighter or heavier."
+          }
+        ]
       }
     ]
   },
@@ -260,7 +330,48 @@ export const PLAN = [
         "img": "rack",
         "eq": "Barbell in the Torque rack",
         "yt": "https://www.youtube.com/results?search_query=Barbell+Romanian+deadlift+form",
-        "alt": ""
+        "alt": "",
+        "alts": [
+          {
+            "id": "cable-pull-through",
+            "name": "Cable pull-through",
+            "sets": 3,
+            "reps": "12-15",
+            "works": "Hamstrings, glutes",
+            "how": "Rope on the low pulley. Face away from the machine with the rope between your legs. Push the hips back until you feel the hamstrings stretch, then stand tall by squeezing the glutes. The arms just hold on.",
+            "img": "rope",
+            "eq": "Rope on the cable machine, low pulley",
+            "yt": "https://www.youtube.com/results?search_query=Cable%20pull-through%20form",
+            "alt": "",
+            "why": "Teaches the same hip hinge with no load on the spine. The safest place to start."
+          },
+          {
+            "id": "dumbbell-hip-thrust",
+            "name": "Dumbbell hip thrust",
+            "sets": 3,
+            "reps": "10-12",
+            "works": "Glutes, hamstrings",
+            "how": "Upper back against a bench, feet flat, a dumbbell across the hips. Drive through the heels until the body is flat from knees to shoulders, pause, lower under control.",
+            "img": "bench",
+            "eq": "Bench and one dumbbell",
+            "yt": "https://www.youtube.com/results?search_query=Dumbbell%20hip%20thrust%20form",
+            "alt": "",
+            "why": "Hits the glutes hard with the back supported."
+          },
+          {
+            "id": "dumbbell-romanian-deadlift",
+            "name": "Dumbbell Romanian deadlift",
+            "sets": 3,
+            "reps": "10-12",
+            "works": "Hamstrings, glutes, lower back",
+            "how": "Dumbbells in front of the thighs. Push the hips back with a slight knee bend until you feel the hamstrings stretch, then stand up. Back stays flat the whole time.",
+            "img": "dbrack",
+            "eq": "Dumbbell rack",
+            "yt": "https://www.youtube.com/results?search_query=Dumbbell%20Romanian%20deadlift%20form",
+            "alt": "",
+            "why": "Same lift, lighter and easier to control. One step below the barbell."
+          }
+        ]
       },
       {
         "id": "dumbbell-bulgarian-split-squat",
@@ -353,7 +464,48 @@ export const PLAN = [
         "img": "bands",
         "eq": "Pull-up bar and the bands hanging in the cable machine",
         "yt": "https://www.youtube.com/results?search_query=Chin-ups+form",
-        "alt": ""
+        "alt": "",
+        "alts": [
+          {
+            "id": "band-assisted-chin-up",
+            "name": "Band-assisted chin-up",
+            "sets": 3,
+            "reps": "6-10",
+            "works": "Lats, biceps",
+            "how": "Loop a band over the pull-up bar and put one knee or foot in it. The band helps most at the bottom, where you are weakest. Move to a thinner band as it gets easier.",
+            "img": "bands",
+            "eq": "Pull-up bar and the bands on the cable machine",
+            "yt": "https://www.youtube.com/results?search_query=Band-assisted%20chin-up%20form",
+            "alt": "",
+            "why": "Same movement, less bodyweight. The most direct route back to full chin-ups."
+          },
+          {
+            "id": "negative-chin-up",
+            "name": "Negative chin-up",
+            "sets": 3,
+            "reps": "4-6",
+            "works": "Lats, biceps",
+            "how": "Step or jump up until your chin is over the bar, then lower yourself as slowly as you can, aiming for 3 to 5 seconds. Step back up for the next rep.",
+            "img": "pullup",
+            "eq": "Pull-up bar on the cable machine",
+            "yt": "https://www.youtube.com/results?search_query=Negative%20chin-up%20form",
+            "alt": "",
+            "why": "You are stronger lowering than lifting. This builds the top half first."
+          },
+          {
+            "id": "lat-pulldown",
+            "name": "Lat pulldown",
+            "sets": 3,
+            "reps": "8-12",
+            "works": "Lats (back width), biceps",
+            "how": "Grip slightly wider than the shoulders. Pull the bar to the upper chest leading with the elbows. Return slowly.",
+            "img": "latpull",
+            "eq": "Lat pulldown machine, behind the dumbbell rack",
+            "yt": "https://www.youtube.com/results?search_query=Lat%20pulldown%20form",
+            "alt": "",
+            "why": "Machine version you can set to any weight. Logs together with the Wednesday pulldowns."
+          }
+        ]
       },
       {
         "id": "cable-chest-fly",

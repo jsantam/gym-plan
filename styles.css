@@ -184,3 +184,17 @@ main{max-width:640px;margin:0 auto;padding:0 0 calc(var(--nav-h) + 76px + env(sa
 .msg.bad{color:var(--warn)}
 
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---------- swapping an exercise for an easier alternative ---------- */
+.swapped{color:var(--oak);font-size:14px;margin-top:2px}
+.swapbtn{display:block}
+.hint{margin:12px 0 0;font-size:14px;color:var(--mute)}
+.swaplist{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;
+  border-radius:8px;padding:10px 12px;min-height:44px;cursor:pointer;color:inherit}
+.opt b{display:block;font-family:"Barlow Semi Condensed",Barlow,sans-serif;font-size:17px;font-weight:600}
+.opt span{display:block;color:var(--mute);font-size:14px;line-height:1.35;margin-top:2px}
+.opt.on{border-color:var(--tan);background:#faf5eb}
+.opt.on b::after{content:" ·  in use";color:var(--oak);font-weight:600;font-size:14px}
+.opt:focus-visible{outline:2px solid var(--tan);outline-offset:2px}
+.swapnote{margin:2px 0 0;font-size:14px;color:var(--mute)}
