@@ -1,6 +1,6 @@
 // Offline cache. Bump CACHE when you change any file below, or the
 // old copy keeps being served.
-const CACHE = "gym-plan-v20260903-2";
+const CACHE = "gym-plan-v20260903-3";
 const ASSETS = [
   "./",
   "index.html",
@@ -9,6 +9,7 @@ const ASSETS = [
   "src/app.js",
   "src/plan.js",
   "src/store.js",
+  "src/migrate.js",
   "src/session.js",
   "src/timer.js",
   "src/today.js",

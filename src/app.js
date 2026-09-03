@@ -1,6 +1,8 @@
 // Router. Four screens, hash based so it works from a file:// path and
 // from a project subpath on GitHub Pages without any server rewrites.
 
+import { migrateTypedSets } from './migrate.js';
+
 const ROUTES = {
   today: () => import('./today.js'),
   history: () => import('./history.js'),
@@ -32,7 +34,7 @@ async function go() {
 }
 
 window.addEventListener('hashchange', go);
-go();
+migrateTypedSets().catch(e => console.warn('migrate', e)).then(go);
 
 // Service worker: only meaningful over http(s), and skipped on localhost
 // so a dev reload never serves a stale cached build.
